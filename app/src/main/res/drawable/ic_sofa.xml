@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Respaldo -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M14,30 L14,22 C14,17.6 17.6,14 22,14 L42,14 C46.4,14 50,17.6 50,22 L50,30"
+        android:strokeColor="#6D4C41"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4" />
+
+    <!-- Asiento -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M14,31 L18,31 C20.2,31 22,32.8 22,35 L22,38 L42,38 L42,35 C42,32.8 43.8,31 46,31 L50,31"
+        android:strokeColor="#6D4C41"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4" />
+
+    <!-- Brazos y base -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M14,28 C10.7,28 8,30.7 8,34 L8,43 C8,45.2 9.8,47 12,47 L52,47 C54.2,47 56,45.2 56,43 L56,34 C56,30.7 53.3,28 50,28"
+        android:strokeColor="#6D4C41"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4" />
+
+    <!-- Patas -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M16,47 L14,52 M48,47 L50,52"
+        android:strokeColor="#6D4C41"
+        android:strokeLineCap="round"
+        android:strokeWidth="4" />
+
+</vector>

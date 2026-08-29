@@ -113,8 +113,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
-
             imgArticulo.setPadding(70, 70, 70, 70);
             imgArticulo.setScaleType(
                     ImageView.ScaleType.CENTER_INSIDE

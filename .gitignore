@@ -1,15 +1,72 @@
+# ------------------------------
+# Android Studio / IntelliJ
+# ------------------------------
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# ------------------------------
+# Gradle
+# ------------------------------
+.gradle/
+**/build/
+
+# ------------------------------
+# Configuración local
+# ------------------------------
 local.properties
+
+# ------------------------------
+# Archivos generados por Android
+# ------------------------------
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ------------------------------
+# Aplicaciones compiladas
+# Se pueden publicar en Releases,
+# pero no conviene agregarlas al código
+# ------------------------------
+*.apk
+*.aab
+*.ap_
+
+# ------------------------------
+# Firmas y claves privadas
+# NUNCA deben subirse
+# ------------------------------
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# ------------------------------
+# Variables y secretos
+# ------------------------------
+.env
+.env.*
+!.env.example
+secrets.properties
+
+# ------------------------------
+# Datos privados de MuebleriaApp
+# ------------------------------
+articulos.json
+articulos_seguro.dat
+*.dat
+
+# ------------------------------
+# Registros y archivos temporales
+# ------------------------------
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# ------------------------------
+# Archivos del sistema operativo
+# ------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini

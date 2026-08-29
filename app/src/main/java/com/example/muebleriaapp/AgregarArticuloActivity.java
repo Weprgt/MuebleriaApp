@@ -53,7 +53,7 @@ public class AgregarArticuloActivity extends AppCompatActivity {
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION
                         );
                     } catch (SecurityException e) {
-                        e.printStackTrace();
+                        // No se muestra ni registra la URI de la imagen.
                     }
                 }
             }
@@ -204,8 +204,6 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             tomarFotografia.launch(uriFotoCamara);
 
         } catch (IOException e) {
-            e.printStackTrace();
-
             Toast.makeText(
                     this,
                     "No se pudo crear el archivo de la fotografía",
@@ -220,8 +218,6 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             imgArticulo.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgArticulo.setImageURI(uri);
         } catch (Exception e) {
-            e.printStackTrace();
-
             imgArticulo.setPadding(58, 58, 58, 58);
             imgArticulo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imgArticulo.setImageResource(R.drawable.ic_sofa);
@@ -229,10 +225,22 @@ public class AgregarArticuloActivity extends AppCompatActivity {
     }
 
     private void guardarArticulo() {
-        String nombre = edtNombre.getText().toString().trim();
-        String precio = edtPrecio.getText().toString().trim();
-        String categoria = edtCategoria.getText().toString().trim();
-        String descripcion = edtDescripcion.getText().toString().trim();
+        String nombre = ValidadorEntrada.limpiarTexto(
+                edtNombre.getText().toString(),
+                false
+        );
+
+        String precio;
+
+        String categoria = ValidadorEntrada.limpiarTexto(
+                edtCategoria.getText().toString(),
+                false
+        );
+
+        String descripcion = ValidadorEntrada.limpiarTexto(
+                edtDescripcion.getText().toString(),
+                true
+        );
 
         if (fotoUri != null && !fotoUri.isEmpty()) {
             imgArticulo.setImageURI(Uri.parse(fotoUri));
@@ -243,23 +251,26 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             edtNombre.requestFocus();
             return;
         }
-
-        if (precio.isEmpty()) {
-            edtPrecio.setError("Ingresa el precio");
-            edtPrecio.requestFocus();
+        if (!ValidadorEntrada.longitudValida(
+                nombre,
+                ValidadorEntrada.MAX_NOMBRE
+        )) {
+            edtNombre.setError(
+                    "El nombre admite hasta 80 caracteres"
+            );
+            edtNombre.requestFocus();
             return;
         }
 
         try {
-            double precioNumero = Double.parseDouble(precio);
+            precio = ValidadorEntrada.normalizarPrecio(
+                    edtPrecio.getText().toString()
+            );
 
-            if (precioNumero <= 0) {
-                edtPrecio.setError("El precio debe ser mayor que cero");
-                edtPrecio.requestFocus();
-                return;
-            }
-        } catch (NumberFormatException e) {
-            edtPrecio.setError("Ingresa un precio válido");
+        } catch (IllegalArgumentException e) {
+            edtPrecio.setError(
+                    "Ingresa un precio válido entre Q0.01 y Q9,999,999.99"
+            );
             edtPrecio.requestFocus();
             return;
         }
@@ -269,9 +280,29 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             edtCategoria.requestFocus();
             return;
         }
+        if (!ValidadorEntrada.longitudValida(
+                categoria,
+                ValidadorEntrada.MAX_CATEGORIA
+        )) {
+            edtCategoria.setError(
+                    "La categoría admite hasta 50 caracteres"
+            );
+            edtCategoria.requestFocus();
+            return;
+        }
 
         if (descripcion.isEmpty()) {
             edtDescripcion.setError("Ingresa una descripción");
+            edtDescripcion.requestFocus();
+            return;
+        }
+        if (!ValidadorEntrada.longitudValida(
+                descripcion,
+                ValidadorEntrada.MAX_DESCRIPCION
+        )) {
+            edtDescripcion.setError(
+                    "La descripción admite hasta 500 caracteres"
+            );
             edtDescripcion.requestFocus();
             return;
         }

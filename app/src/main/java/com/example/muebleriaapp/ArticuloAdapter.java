@@ -98,8 +98,6 @@ public class ArticuloAdapter extends ArrayAdapter<Articulo> {
                 imageView.setImageURI(Uri.parse(fotoUri));
 
             } catch (Exception e) {
-                e.printStackTrace();
-
                 imageView.setPadding(26, 26, 26, 26);
                 imageView.setScaleType(
                         ImageView.ScaleType.CENTER_INSIDE

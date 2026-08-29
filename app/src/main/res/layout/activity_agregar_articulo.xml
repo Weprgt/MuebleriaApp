@@ -82,6 +82,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:maxLength="80"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -118,6 +119,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapWords"
+                            android:maxLength="50"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -137,6 +139,7 @@
                             android:gravity="top|start"
                             android:inputType="textCapSentences|textMultiLine"
                             android:minHeight="120dp"
+                            android:maxLength="500"
                             android:minLines="4" />
 
                     </com.google.android.material.textfield.TextInputLayout>

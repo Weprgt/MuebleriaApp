@@ -38,6 +38,8 @@ public class AgregarArticuloActivity extends AppCompatActivity {
 
     // Debe ser una variable de la clase
     private int posicionArticulo = -1;
+    private ArticuloDbHelper dbHelper;
+
 
     private final ActivityResultLauncher<PickVisualMediaRequest>
             selectorFoto = registerForActivityResult(
@@ -99,6 +101,7 @@ public class AgregarArticuloActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_agregar_articulo);
+        dbHelper = new ArticuloDbHelper(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),
@@ -154,6 +157,8 @@ public class AgregarArticuloActivity extends AppCompatActivity {
 
             Articulo articulo =
                     DatosApp.listaArticulos.get(posicionArticulo);
+
+            fotoUri = articulo.getFotoUri();
 
             edtNombre.setText(articulo.getNombre());
             edtPrecio.setText(articulo.getPrecio());
@@ -307,20 +312,46 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             return;
         }
 
-        Articulo articulo = new Articulo(
-                nombre,
-                precio,
-                descripcion,
-                categoria,
-                fotoUri
-        );
-
-        fotoUri = articulo.getFotoUri();
+        Articulo articulo;
 
         if (posicionArticulo >= 0
                 && posicionArticulo < DatosApp.listaArticulos.size()) {
 
-            DatosApp.listaArticulos.set(posicionArticulo, articulo);
+            Articulo articuloAnterior =
+                    DatosApp.listaArticulos.get(posicionArticulo);
+
+            articulo = new Articulo(
+                    articuloAnterior.getId(),
+                    nombre,
+                    precio,
+                    descripcion,
+                    categoria,
+                    fotoUri
+            );
+
+            boolean actualizadoCorrectamente;
+
+            if (articuloAnterior.getId() <= 0) {
+                actualizadoCorrectamente =
+                        dbHelper.insertarArticulo(articulo) != -1;
+            } else {
+                actualizadoCorrectamente =
+                        dbHelper.actualizarArticulo(articulo) > 0;
+            }
+
+            if (!actualizadoCorrectamente) {
+                Toast.makeText(
+                        this,
+                        "No se pudo actualizar el artículo",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            DatosApp.listaArticulos.set(
+                    posicionArticulo,
+                    articulo
+            );
 
             Toast.makeText(
                     this,
@@ -329,6 +360,26 @@ public class AgregarArticuloActivity extends AppCompatActivity {
             ).show();
 
         } else {
+            articulo = new Articulo(
+                    nombre,
+                    precio,
+                    descripcion,
+                    categoria,
+                    fotoUri
+            );
+
+            long idGenerado =
+                    dbHelper.insertarArticulo(articulo);
+
+            if (idGenerado == -1) {
+                Toast.makeText(
+                        this,
+                        "No se pudo guardar el artículo",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
             DatosApp.listaArticulos.add(articulo);
 
             Toast.makeText(
@@ -337,6 +388,8 @@ public class AgregarArticuloActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         }
+
+        // Se conserva temporalmente mientras migramos los datos anteriores.
         DatosApp.guardarArticulos(this);
 
         finish();

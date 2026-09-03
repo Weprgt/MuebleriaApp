@@ -8,17 +8,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import android.widget.TextView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.button.MaterialButton;
 
 public class InicioActivity extends AppCompatActivity {
 
     private MaterialButton btnVerInventario;
     private MaterialButton btnAgregarDesdeInicio;
+    private TextView txtUsuarioSesion;
+    private MaterialButton btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!SesionUsuario.estaIniciada(this)) {
+            abrirLogin();
+            return;
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inicio);
 
@@ -59,5 +66,50 @@ public class InicioActivity extends AppCompatActivity {
             );
             startActivity(intent);
         });
+
+        txtUsuarioSesion =
+                findViewById(R.id.txtUsuarioSesion);
+
+        btnCerrarSesion =
+                findViewById(R.id.btnCerrarSesion);
+
+        txtUsuarioSesion.setText(
+                "Sesión: " + SesionUsuario.obtenerUsuario(this)
+        );
+
+        btnCerrarSesion.setOnClickListener(v ->
+                mostrarConfirmacionCerrarSesion()
+        );
+    }
+    private void mostrarConfirmacionCerrarSesion() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage(
+                        "¿Deseas cerrar la sesión actual?"
+                )
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton(
+                        "Cerrar sesión",
+                        (dialog, which) -> {
+                            SesionUsuario.cerrar(this);
+                            abrirLogin();
+                        }
+                )
+                .show();
+    }
+
+    private void abrirLogin() {
+        Intent intent = new Intent(
+                this,
+                LoginActivity.class
+        );
+
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
+        startActivity(intent);
+        finish();
     }
 }

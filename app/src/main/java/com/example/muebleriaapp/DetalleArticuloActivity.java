@@ -22,6 +22,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
     private MaterialButton btnEditar;
     private int posicionArticulo;
     private ImageView imgArticulo;
+    private ArticuloDbHelper dbHelper;
 
 
     @Override
@@ -29,6 +30,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detalle_articulo);
+        dbHelper = new ArticuloDbHelper(this);
 
         // Conectar los controles del XML
         toolbarDetalle = findViewById(R.id.toolbarDetalle);
@@ -138,7 +140,28 @@ public class DetalleArticuloActivity extends AppCompatActivity {
             return;
         }
 
+        Articulo articulo =
+                DatosApp.listaArticulos.get(posicionArticulo);
+
+        // Los artículos antiguos con ID -1 todavía no están en SQLite.
+        if (articulo.getId() > 0) {
+            int filasEliminadas =
+                    dbHelper.eliminarArticulo(articulo);
+
+            if (filasEliminadas == 0) {
+                Snackbar.make(
+                        findViewById(R.id.main),
+                        "No se pudo eliminar el artículo",
+                        Snackbar.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+        }
+
         DatosApp.listaArticulos.remove(posicionArticulo);
+
+        // Se mantiene temporalmente hasta terminar la migración.
         DatosApp.guardarArticulos(this);
 
         Snackbar.make(
@@ -153,8 +176,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
             ) {
                 finish();
             }
-        }
-        ).show();
+        }).show();
     }
 
     @Override

@@ -110,6 +110,7 @@ public class DatosApp {
                     arregloJson.getJSONObject(i);
 
             Articulo articulo = new Articulo(
+                    objetoJson.optLong("id", -1),
                     objetoJson.optString("nombre"),
                     objetoJson.optString("precio"),
                     objetoJson.optString("descripcion"),
@@ -127,7 +128,7 @@ public class DatosApp {
         try {
             for (Articulo articulo : listaArticulos) {
                 JSONObject objetoJson = new JSONObject();
-
+                objetoJson.put("id", articulo.getId());
                 objetoJson.put("nombre", articulo.getNombre());
                 objetoJson.put("precio", articulo.getPrecio());
                 objetoJson.put(

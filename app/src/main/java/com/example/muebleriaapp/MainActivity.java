@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ListView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +22,12 @@ import java.util.Locale;
 
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton btnAgregarArticulo;
-    private ListView lvArticulos;
+    private RecyclerView rvArticulos;
     private TextInputEditText edtBuscar;
 
     private ArticuloAdapter adapter;
@@ -34,12 +36,15 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView txtCantidadArticulos;
     private View estadoVacio;
+    private ArticuloDbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new ArticuloDbHelper(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),
@@ -63,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         btnAgregarArticulo =
                 findViewById(R.id.btnAgregarArticulo);
 
-        lvArticulos =
-                findViewById(R.id.lvArticulos);
+        rvArticulos =
+                findViewById(R.id.rvArticulos);
 
         edtBuscar =
                 findViewById(R.id.edtBuscar);
@@ -77,35 +82,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Cargar los artículos guardados.
         DatosApp.cargarArticulos(this);
+        migrarArticulosAntiguos();
+        cargarArticulosDesdeSQLite();
 
-        // Crear el adaptador una sola vez.
-        adapter = new ArticuloAdapter(
-                this,
-                articulosMostrados
+        // Configurar el RecyclerView.
+        rvArticulos.setLayoutManager(
+                new LinearLayoutManager(this)
         );
 
-        lvArticulos.setAdapter(adapter);
-
-        // Mostrar inicialmente todos los artículos.
-        filtrarArticulos("");
-
-        // Abrir el formulario para agregar.
-        btnAgregarArticulo.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    AgregarArticuloActivity.class
-            );
-
-            startActivity(intent);
-        });
-
-        // Abrir el detalle del artículo seleccionado.
-        lvArticulos.setOnItemClickListener(
-                (parent, view, position, id) -> {
-
-                    Articulo articuloSeleccionado =
-                            articulosMostrados.get(position);
-
+// Crear el adaptador una sola vez.
+        adapter = new ArticuloAdapter(
+                this,
+                articulosMostrados,
+                articuloSeleccionado -> {
                     int posicionOriginal =
                             DatosApp.listaArticulos.indexOf(
                                     articuloSeleccionado
@@ -128,6 +117,21 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
         );
+
+        rvArticulos.setAdapter(adapter);
+
+        // Mostrar inicialmente todos los artículos.
+        filtrarArticulos("");
+
+        // Abrir el formulario para agregar.
+        btnAgregarArticulo.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    AgregarArticuloActivity.class
+            );
+
+            startActivity(intent);
+        });
 
         // Detectar cambios en el buscador.
         edtBuscar.addTextChangedListener(new TextWatcher() {
@@ -204,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 listaVacia ? View.VISIBLE : View.GONE
         );
 
-        lvArticulos.setVisibility(
+        rvArticulos.setVisibility(
                 listaVacia ? View.GONE : View.VISIBLE
         );
     }
@@ -223,6 +227,50 @@ public class MainActivity extends AppCompatActivity {
         ).replaceAll("\\p{M}", "");
     }
 
+    private void migrarArticulosAntiguos() {
+        boolean seRealizoMigracion = false;
+
+        for (Articulo articulo : DatosApp.listaArticulos) {
+            if (articulo.getId() <= 0) {
+                long idGenerado =
+                        dbHelper.insertarArticulo(articulo);
+
+                if (idGenerado == -1) {
+                    Toast.makeText(
+                            this,
+                            "No se pudieron migrar los artículos a SQLite",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    return;
+                }
+
+                seRealizoMigracion = true;
+            }
+        }
+
+        if (seRealizoMigracion) {
+            boolean respaldoActualizado =
+                    DatosApp.guardarArticulos(this);
+
+            if (!respaldoActualizado) {
+                Toast.makeText(
+                        this,
+                        "SQLite se actualizó, pero falló el respaldo temporal",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        }
+    }
+
+    private void cargarArticulosDesdeSQLite() {
+        DatosApp.listaArticulos.clear();
+
+        DatosApp.listaArticulos.addAll(
+                dbHelper.obtenerTodosLosArticulos()
+        );
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -230,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         if (adapter == null) {
             return;
         }
-
+        cargarArticulosDesdeSQLite();
         String busquedaActual = "";
 
         if (edtBuscar.getText() != null) {

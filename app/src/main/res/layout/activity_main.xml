@@ -87,17 +87,16 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <ListView
-                android:id="@+id/lvArticulos"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvArticulos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="12dp"
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="96dp" />
+                android:paddingBottom="96dp"
+                android:scrollbars="vertical" />
 
             <LinearLayout
                 android:id="@+id/estadoVacio"

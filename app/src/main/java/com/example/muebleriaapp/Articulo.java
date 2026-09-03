@@ -1,7 +1,7 @@
 package com.example.muebleriaapp;
 
 public class Articulo {
-
+    private long id = -1;
     private String nombre;
     private String precio;
     private String descripcion;
@@ -9,22 +9,7 @@ public class Articulo {
     private String fotoUri;
 
     // Constructor utilizado cuando todavía no hay fotografía
-    public Articulo(
-            String nombre,
-            String precio,
-            String descripcion,
-            String categoria
-    ) {
-        this(
-                nombre,
-                precio,
-                descripcion,
-                categoria,
-                ""
-        );
-    }
-
-    // Constructor utilizado cuando sí existe una fotografía
+    // Constructor para un artículo que todavía no está guardado en SQLite
     public Articulo(
             String nombre,
             String precio,
@@ -32,6 +17,26 @@ public class Articulo {
             String categoria,
             String fotoUri
     ) {
+        this(
+                -1,
+                nombre,
+                precio,
+                descripcion,
+                categoria,
+                fotoUri
+        );
+    }
+
+    // Constructor para recuperar un artículo almacenado en SQLite
+    public Articulo(
+            long id,
+            String nombre,
+            String precio,
+            String descripcion,
+            String categoria,
+            String fotoUri
+    ) {
+        this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
@@ -61,5 +66,13 @@ public class Articulo {
 
     public void setFotoUri(String fotoUri) {
         this.fotoUri = fotoUri;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

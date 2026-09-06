@@ -5,10 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
-
 import java.util.ArrayList;
 
 public class ArticuloDbHelper extends SQLiteOpenHelper {
+    // Definir las constantes para la base de datos.
     public static final String TABLA_ARTICULOS = "articulos";
     public static final String COLUMNA_ID = "_id";
     public static final String COLUMNA_NOMBRE = "nombre";
@@ -17,7 +17,7 @@ public class ArticuloDbHelper extends SQLiteOpenHelper {
     public static final String COLUMNA_CATEGORIA = "categoria";
     public static final String COLUMNA_FOTO_URI = "foto_uri";
 
-
+    // Definir las constantes para la tabla de usuarios.
     public static final String TABLA_USUARIOS = "usuarios";
     public static final String COLUMNA_USUARIO_ID = "_id";
     public static final String COLUMNA_USUARIO = "usuario";

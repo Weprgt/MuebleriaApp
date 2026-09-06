@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:contentDescription="Mueblería"
+            android:contentDescription="Mueblería 'Quetzal'"
             android:padding="16dp"
             android:src="@drawable/ic_sofa" />
 

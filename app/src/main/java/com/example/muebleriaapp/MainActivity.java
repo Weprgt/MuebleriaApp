@@ -29,11 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton btnAgregarArticulo;
     private RecyclerView rvArticulos;
     private TextInputEditText edtBuscar;
-
     private ArticuloAdapter adapter;
     private final ArrayList<Articulo> articulosMostrados =
             new ArrayList<>();
-
     private TextView txtCantidadArticulos;
     private View estadoVacio;
     private ArticuloDbHelper dbHelper;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        // Conectar controles.
+        // Mapeo de elementos de la vista.
         btnAgregarArticulo =
                 findViewById(R.id.btnAgregarArticulo);
 

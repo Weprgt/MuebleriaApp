@@ -40,7 +40,6 @@ public class AgregarArticuloActivity extends AppCompatActivity {
     private int posicionArticulo = -1;
     private ArticuloDbHelper dbHelper;
 
-
     private final ActivityResultLauncher<PickVisualMediaRequest>
             selectorFoto = registerForActivityResult(
             new ActivityResultContracts.PickVisualMedia(),

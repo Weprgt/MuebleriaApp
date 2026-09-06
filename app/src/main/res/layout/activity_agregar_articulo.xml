@@ -83,7 +83,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
                             android:maxLength="80"
-                            android:maxLines="1" />
+                            android:maxLines="1"
+                            android:textColor="#3E2723"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,6 +95,7 @@
                         android:layout_marginTop="14dp"
                         android:hint="Precio"
                         app:boxStrokeColor="#6D4C41"
+                        android:textColor="#3E2723"
                         app:prefixText="Q  ">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -120,7 +122,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="textCapWords"
                             android:maxLength="50"
-                            android:maxLines="1" />
+                            android:maxLines="1"
+                            android:textColor="#3E2723"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,7 +133,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:hint="Descripción"
-                        app:boxStrokeColor="#6D4C41">
+                        app:boxStrokeColor="#6D4C41"
+                        android:textColor="#3E2723">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edtDescripcion"

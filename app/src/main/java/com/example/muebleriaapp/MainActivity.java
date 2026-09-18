@@ -24,6 +24,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.util.Log;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton btnAgregarArticulo;
@@ -157,6 +163,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 // No se necesita código aquí.
+            }
+        });
+
+        ExchangeRateApi api = RetrofitClient.getRetrofit()
+                .create(ExchangeRateApi.class);
+
+        api.obtenerTipoCambio().enqueue(new Callback<ExchangeRateResponse>() {
+            @Override
+            public void onResponse(Call<ExchangeRateResponse> call,
+                                   Response<ExchangeRateResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    ExchangeRateResponse datos = response.body();
+
+                    if (datos.getRates() != null &&
+                            datos.getRates().containsKey("GTQ")) {
+
+                        Double tasaGTQ = datos.getRates().get("GTQ");
+
+                        Log.d("TIPO_CAMBIO",
+                                "1 USD = " + tasaGTQ + " GTQ");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ExchangeRateResponse> call,
+                                  Throwable t) {
+
+                Log.e("TIPO_CAMBIO",
+                        "Error al consultar API: " + t.getMessage());
             }
         });
     }

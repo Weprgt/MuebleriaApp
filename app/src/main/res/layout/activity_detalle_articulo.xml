@@ -101,6 +101,24 @@
                         android:textSize="23sp"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/tvPrecioDolares"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="≈ US$ --"
+                        android:textSize="16sp"
+                        android:textColor="#6D4C41" />
+
+                    <TextView
+                        android:id="@+id/tvFuenteTipoCambio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Tipo de cambio: ExchangeRate-API"
+                        android:textSize="11sp"
+                        android:textColor="#757575" />
+
                     <com.google.android.material.chip.Chip
                         android:id="@+id/txtDetalleCategoria"
                         style="@style/Widget.Material3.Chip.Assist"

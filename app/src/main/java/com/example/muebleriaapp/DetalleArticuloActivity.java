@@ -11,6 +11,12 @@ import com.google.android.material.snackbar.Snackbar;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DetalleArticuloActivity extends AppCompatActivity {
 
     private MaterialToolbar toolbarDetalle;
@@ -18,6 +24,8 @@ public class DetalleArticuloActivity extends AppCompatActivity {
     private TextView txtDetallePrecio;
     private TextView txtDetalleCategoria;
     private TextView txtDetalleDescripcion;
+    private TextView tvPrecioDolares;
+    private TextView tvFuenteTipoCambio;
     private MaterialButton btnEliminar;
     private MaterialButton btnEditar;
     private int posicionArticulo;
@@ -38,6 +46,8 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         txtDetallePrecio = findViewById(R.id.txtDetallePrecio);
         txtDetalleCategoria = findViewById(R.id.txtDetalleCategoria);
         txtDetalleDescripcion = findViewById(R.id.txtDetalleDescripcion);
+        tvPrecioDolares = findViewById(R.id.tvPrecioDolares);
+        tvFuenteTipoCambio = findViewById(R.id.tvFuenteTipoCambio);
         btnEliminar = findViewById(R.id.btnEliminar);
         btnEditar = findViewById(R.id.btnEditar);
         imgArticulo = findViewById(R.id.imgArticulo);
@@ -84,7 +94,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         txtDetalleCategoria.setText(articulo.getCategoria());
         txtDetalleDescripcion.setText(articulo.getDescripcion());
         mostrarFotografia(articulo);
-
+        convertirPrecioADolares(articulo);
 
     }
     private void mostrarFotografia(Articulo articulo) {
@@ -196,5 +206,76 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         txtDetalleCategoria.setText(articulo.getCategoria());
         txtDetalleDescripcion.setText(articulo.getDescripcion());
         mostrarFotografia(articulo);
+        convertirPrecioADolares(articulo);
+
+    }
+
+    private void convertirPrecioADolares(Articulo articulo) {
+
+        tvPrecioDolares.setText("Consultando tipo de cambio...");
+
+        ExchangeRateApi api = RetrofitClient.getRetrofit()
+                .create(ExchangeRateApi.class);
+
+        api.obtenerTipoCambio().enqueue(new Callback<ExchangeRateResponse>() {
+
+            @Override
+            public void onResponse(
+                    Call<ExchangeRateResponse> call,
+                    Response<ExchangeRateResponse> response) {
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && response.body().getRates() != null
+                        && response.body().getRates().containsKey("GTQ")) {
+
+                    Double tasaGTQ =
+                            response.body().getRates().get("GTQ");
+
+                    try {
+                        double precioQuetzales =
+                                Double.parseDouble(articulo.getPrecio());
+
+                        double precioDolares =
+                                precioQuetzales / tasaGTQ;
+
+                        tvPrecioDolares.setText(
+                                String.format(
+                                        Locale.US,
+                                        "≈ US$ %.2f",
+                                        precioDolares
+                                )
+                        );
+
+                        tvFuenteTipoCambio.setText(
+                                String.format(
+                                        Locale.US,
+                                        "Tipo de cambio: 1 USD = Q %.4f · ExchangeRate-API",
+                                        tasaGTQ
+                                )
+                        );
+
+                    } catch (NumberFormatException e) {
+                        mostrarConversionNoDisponible();
+                    }
+
+                } else {
+                    mostrarConversionNoDisponible();
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<ExchangeRateResponse> call,
+                    Throwable t) {
+
+                mostrarConversionNoDisponible();
+            }
+        });
+    }
+
+    private void mostrarConversionNoDisponible() {
+        tvPrecioDolares.setText("Conversión no disponible");
+        tvFuenteTipoCambio.setText("Tipo de cambio: ExchangeRate-API");
     }
 }
